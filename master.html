@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ясна | Панель мастера</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <header style="background: white; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 50;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="img/yasna-logo.jpg" alt="Ясна" style="height: 45px; border-radius: 8px;">
+            <h1 style="font-size: 20px; margin: 0;">Панель управления</h1>
+        </div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <span style="color: var(--gray); font-size: 14px;">Мастер: Денис</span>
+            <button type="button" class="btn btn-gray" style="padding: 8px 16px;" onclick="logout()">Выйти</button>
+        </div>
+    </header>
+
+    <nav style="background: white; padding: 0 20px; display: flex; gap: 20px; border-bottom: 1px solid var(--border); overflow-x: auto;">
+        <button type="button" class="nav-btn active" data-tab="dashboard" onclick="switchTab('dashboard')" style="background: none; border: none; padding: 15px 5px; cursor: pointer; font-weight: 600; color: var(--dark); border-bottom: 3px solid var(--yellow); white-space: nowrap;">Главная</button>
+        <button type="button" class="nav-btn" data-tab="schedule" onclick="switchTab('schedule')" style="background: none; border: none; padding: 15px 5px; cursor: pointer; color: var(--gray); white-space: nowrap;">Расписание</button>
+        <button type="button" class="nav-btn" data-tab="attendance" onclick="switchTab('attendance')" style="background: none; border: none; padding: 15px 5px; cursor: pointer; color: var(--gray); white-space: nowrap;">Посещаемость</button>
+        <button type="button" class="nav-btn" data-tab="families" onclick="switchTab('families')" style="background: none; border: none; padding: 15px 5px; cursor: pointer; color: var(--gray); white-space: nowrap;">Семьи</button>
+        <button type="button" class="nav-btn" data-tab="finance" onclick="switchTab('finance')" style="background: none; border: none; padding: 15px 5px; cursor: pointer; color: var(--gray); white-space: nowrap;">Абонементы</button>
+    </nav>
+
+    <main style="max-width: 1200px; margin: 30px auto; padding: 0 20px;">
+        
+        <section id="tab-dashboard">
+            <h2 style="margin-bottom: 20px; font-size: 22px;">Сводка на сегодня</h2>
+            <div class="grid">
+                <div class="stat-card">
+                    <div style="color: var(--gray); font-size: 14px; margin-bottom: 5px;">Занятий сегодня</div>
+                    <div style="font-size: 30px; font-weight: bold;" id="stat-lessons">0</div>
+                </div>
+                <div class="stat-card">
+                    <div style="color: var(--gray); font-size: 14px; margin-bottom: 5px;">Записано детей</div>
+                    <div style="font-size: 30px; font-weight: bold;" id="stat-children">0</div>
+                </div>
+                <div class="stat-card red">
+                    <div style="color: var(--gray); font-size: 14px; margin-bottom: 5px;">Заканчивается абонемент</div>
+                    <div style="font-size: 30px; font-weight: bold;" id="stat-ending">0</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-schedule" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-size: 22px; margin: 0;">Расписание</h2>
+                <button type="button" class="btn" onclick="openModal('modal-create-lesson')">+ Создать занятие</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Дата и время</th><th>Название</th><th>Мест</th><th>Статус</th></tr></thead>
+                    <tbody id="schedule-list"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tab-attendance" style="display: none;">
+            <h2 style="font-size: 22px; margin-bottom: 20px;">Журнал посещаемости</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Ребенок</th><th>Занятие</th><th>Статус</th><th>Действие</th></tr></thead>
+                    <tbody id="attendance-list"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tab-families" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-size: 22px; margin: 0;">Семьи и дети</h2>
+                <button type="button" class="btn" onclick="openModal('modal-create-family')">+ Добавить семью</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Семья</th><th>Дети</th><th>Ссылка</th></tr></thead>
+                    <tbody id="families-list"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tab-finance" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-size: 22px; margin: 0;">Абонементы</h2>
+                <button type="button" class="btn" onclick="openModal('modal-create-subscription')">+ Создать абонемент</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Семья</th><th>Название</th><th>Остаток</th></tr></thead>
+                    <tbody id="finance-list"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- МОДАЛКА: СЕМЬЯ -->
+    <div class="modal-overlay" id="modal-create-family">
+        <div class="modal-content">
+            <h3>Новая семья</h3>
+            <div class="form-group"><label>Имя родителя</label><input type="text" class="form-input" id="family-name" value="Анна Иванова"></div>
+            <div class="form-group"><label>Телефон</label><input type="text" class="form-input" id="family-phone" value="+79991234567"></div>
+            <div class="form-group"><label>Имя ребенка</label><input type="text" class="form-input" id="child-name" value="Миша"></div>
+            <div class="form-group"><label>Фамилия ребенка</label><input type="text" class="form-input" id="child-lastname" value="Иванов"></div>
+            <div class="form-group"><label>Дата рождения</label><input type="date" class="form-input" id="child-birthdate" value="2015-01-01"></div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="button" class="btn btn-block" onclick="createFamily()">Создать</button>
+                <button type="button" class="btn btn-gray btn-block" onclick="closeModal('modal-create-family')">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА: ЗАНЯТИЕ -->
+    <div class="modal-overlay" id="modal-create-lesson">
+        <div class="modal-content">
+            <h3>Новое занятие</h3>
+            <div class="form-group"><label>Название</label><input type="text" class="form-input" id="lesson-title" value="Столярка"></div>
+            <div class="form-group"><label>Дата и время</label><input type="datetime-local" class="form-input" id="lesson-date"></div>
+            <div class="form-group"><label>Мест</label><input type="number" class="form-input" id="lesson-capacity" value="6"></div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="button" class="btn btn-block" onclick="createLesson()">Создать</button>
+                <button type="button" class="btn btn-gray btn-block" onclick="closeModal('modal-create-lesson')">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА: АБОНЕМЕНТ -->
+    <div class="modal-overlay" id="modal-create-subscription">
+        <div class="modal-content">
+            <h3>Новый абонемент</h3>
+            <div class="form-group"><label>Семья</label><select class="form-input" id="subscription-family"></select></div>
+            <div class="form-group"><label>Название</label><input type="text" class="form-input" id="subscription-title" value="Абонемент на 8 занятий"></div>
+            <div class="form-group"><label>Количество занятий</label><input type="number" class="form-input" id="subscription-total" value="8"></div>
+            <div class="form-group"><label>Стоимость</label><input type="number" class="form-input" id="subscription-price" value="5000"></div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="button" class="btn btn-block" onclick="createSubscription()">Создать</button>
+                <button type="button" class="btn btn-gray btn-block" onclick="closeModal('modal-create-subscription')">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА: ССЫЛКА -->
+    <div class="modal-overlay" id="modal-show-link">
+        <div class="modal-content">
+            <h3>Ссылка для родителя</h3>
+            <p style="color: #EF4444; font-size: 14px; font-weight: bold;">Скопируйте её сейчас! Повторно она не отобразится.</p>
+            <input type="text" class="form-input" id="family-link-input" readonly style="margin-bottom: 15px; background: #F3F4F6;">
+            <button type="button" class="btn btn-block" onclick="copyLinkAndClose()">Скопировать и закрыть</button>
+        </div>
+    </div>
+
+    <!-- ПОДКЛЮЧАЕМ СКРИПТЫ -->
+    <script src="js/ui.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    
+    <!-- ВСТРАИВАЕМ ЛОГИКУ ПРЯМО СЮДА, ЧТОБЫ ОНА ТОЧНО ЗАГРУЗИЛАСЬ -->
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('section[id^="tab-"]').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.style.color = 'var(--gray)';
+                el.style.borderBottom = 'none';
+            });
+
+            const section = document.getElementById(`tab-${tabId}`);
+            const activeBtn = document.querySelector(`.nav-btn[data-tab="${tabId}"]`);
+            
+            if (section) section.style.display = 'block';
+            if (activeBtn) {
+                activeBtn.style.color = 'var(--dark)';
+                activeBtn.style.borderBottom = '3px solid var(--yellow)';
+            }
+
+            if (tabId === 'dashboard') loadDashboard();
+            if (tabId === 'schedule') loadSchedule();
+            if (tabId === 'attendance') loadAttendance();
+            if (tabId === 'families') loadFamilies();
+            if (tabId === 'finance') loadFinance();
+        }
+
+        async function loadDashboard() {
+            try {
+                const [lessons, families, subscriptions] = await Promise.all([
+                    masterRequest('/master/lessons'),
+                    masterRequest('/master/families'),
+                    masterRequest('/master/subscriptions')
+                ]);
+
+                const today = new Date();
+                const todayLessons = lessons.filter(l => {
+                    const d = new Date(l.starts_at);
+                    return d.getDate() === today.getDate() && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
+                });
+
+                const childrenTotal = families.reduce((acc, f) => acc + (f.children?.length || 0), 0);
+                const endingSubs = subscriptions.filter(s => (s.total_lessons - s.used_lessons) <= 2).length;
+
+                document.getElementById('stat-lessons').innerText = todayLessons.length;
+                document.getElementById('stat-children').innerText = childrenTotal;
+                document.getElementById('stat-ending').innerText = endingSubs;
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadSchedule() {
+            try {
+                const lessons = await masterRequest('/master/lessons');
+                const tbody = document.getElementById('schedule-list');
+                if (!lessons || lessons.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Нет занятий</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = lessons.map(l => `
+                    <tr>
+                        <td>${formatDate(l.starts_at)}</td>
+                        <td>${l.title}</td>
+                        <td>${l.booked_count} / ${l.capacity}</td>
+                        <td>${l.is_active ? 'Активно' : 'Отменено'}</td>
+                    </tr>
+                `).join('');
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function createLesson() {
+            const data = {
+                title: document.getElementById('lesson-title').value,
+                starts_at: document.getElementById('lesson-date').value,
+                capacity: parseInt(document.getElementById('lesson-capacity').value)
+            };
+            try {
+                await masterRequest('/master/lessons', { method: 'POST', body: JSON.stringify(data) });
+                closeModal('modal-create-lesson');
+                showToast('Занятие создано');
+                loadSchedule();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function loadFamilies() {
+            try {
+                const families = await masterRequest('/master/families');
+                const tbody = document.getElementById('families-list');
+                if (!families || families.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Нет семей</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = families.map(f => `
+                    <tr>
+                        <td>${f.name}</td>
+                        <td>${f.children?.length ? f.children.join(', ') : 'Нет детей'}</td>
+                        <td><button type="button" class="btn" onclick="generateLink(${f.id})">Выдать ссылку</button></td>
+                    </tr>
+                `).join('');
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function createFamily() {
+            const familyData = {
+                name: document.getElementById('family-name').value,
+                phone: document.getElementById('family-phone').value
+            };
+            const childData = {
+                first_name: document.getElementById('child-name').value,
+                last_name: document.getElementById('child-lastname').value,
+                birth_date: document.getElementById('child-birthdate').value
+            };
+            try {
+                const family = await masterRequest('/master/families', { method: 'POST', body: JSON.stringify(familyData) });
+                await masterRequest(`/master/families/${family.id}/children`, { method: 'POST', body: JSON.stringify(childData) });
+                closeModal('modal-create-family');
+                showToast('Семья создана');
+                loadFamilies();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function generateLink(familyId) {
+            try {
+                const res = await masterRequest(`/master/families/${familyId}/link`, { method: 'POST' });
+                const path = window.location.pathname.replace('master.html', 'family.html');
+                const url = window.location.origin + path + "?token=" + res.access_token;
+                document.getElementById('family-link-input').value = url;
+                openModal('modal-show-link');
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        function copyLinkAndClose() {
+            const input = document.getElementById('family-link-input');
+            input.select();
+            document.execCommand('copy');
+            closeModal('modal-show-link');
+            showToast('Ссылка скопирована');
+        }
+
+        async function loadFinance() {
+            try {
+                const families = await masterRequest('/master/families');
+                const select = document.getElementById('subscription-family');
+                if (select) {
+                    select.innerHTML = '<option value="">Выберите семью</option>';
+                    families.forEach(f => { select.innerHTML += `<option value="${f.id}">${f.name}</option>`; });
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function createSubscription() {
+            const data = {
+                family_id: parseInt(document.getElementById('subscription-family').value),
+                title: document.getElementById('subscription-title').value,
+                total_lessons: parseInt(document.getElementById('subscription-total').value),
+                price: parseFloat(document.getElementById('subscription-price').value),
+                expires_at: null
+            };
+            try {
+                await masterRequest('/master/subscriptions', { method: 'POST', body: JSON.stringify(data) });
+                closeModal('modal-create-subscription');
+                showToast('Абонемент создан');
+                loadFinance();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function loadAttendance() {
+            try {
+                const list = await masterRequest('/master/attendance');
+                const tbody = document.getElementById('attendance-list');
+                if (!list || list.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Нет записей</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = list.map(item => {
+                    let statusText = 'Не отмечено';
+                    let statusClass = 'badge-gray';
+                    if (item.status === 'attended') { statusText = 'Посетил'; statusClass = 'badge-green'; }
+                    if (item.status === 'missed') { statusText = 'Пропустил'; statusClass = 'badge-red'; }
+
+                    return `
+                        <tr>
+                            <td>${item.childName || 'Ребенок'}</td>
+                            <td>${item.lessonTitle || 'Занятие'}</td>
+                            <td><span class="badge ${statusClass}">${statusText}</span></td>
+                            <td>
+                                <button type="button" class="btn" onclick="markAttendance(${item.id}, 'attended')">Посетил</button>
+                                <button type="button" class="btn btn-gray" onclick="markAttendance(${item.id}, 'missed')">Пропустил</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (e) { 
+                document.getElementById('attendance-list').innerHTML = `<tr><td colspan="4" style="text-align:center;">Ошибка загрузки: ${e.message}</td></tr>`;
+            }
+        }
+
+        async function markAttendance(id, status) {
+            try {
+                await masterRequest(`/master/bookings/${id}/attendance`, { method: 'PUT', body: JSON.stringify({ status }) });
+                showToast('Отметка сохранена');
+                loadAttendance();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        // Запускаем при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            switchTab('dashboard');
+        });
+    </script>
+</body>
+</html>

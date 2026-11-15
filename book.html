@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ясна | Запись на занятие</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <header style="background: white; padding: 20px; display: flex; align-items: center; justify-content: center; border-bottom: 4px solid var(--yellow);">
+        <img src="img/yasna-logo.jpg" alt="Ясна" style="height: 60px; border-radius: 8px;">
+    </header>
+
+    <main style="max-width: 600px; margin: 30px auto; padding: 0 15px;">
+        
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="margin-bottom: 10px;">Запись в мастерскую</h1>
+            <p style="color: var(--gray);">Выберите подходящее время и запишите ребенка</p>
+        </div>
+
+        <div id="lessons-container" style="display: flex; flex-direction: column; gap: 15px;"></div>
+
+    </main>
+
+    <div class="modal-overlay" id="modal-book">
+        <div class="modal-content">
+            <h3>Подтверждение записи</h3>
+            <p style="color: var(--gray); font-size: 14px;" id="book-lesson-info">Выберите ребенка:</p>
+            <div id="book-children-list" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;"></div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-block" id="btn-confirm-book" onclick="confirmBooking()">Записаться</button>
+                <button class="btn btn-gray btn-block" onclick="closeModal('modal-book')">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-public">
+        <div class="modal-content" style="text-align: center;">
+            <h3>Требуется авторизация</h3>
+            <p style="color: var(--gray); margin-bottom: 20px;">Чтобы записать ребенка, вам нужна персональная ссылка от мастера.</p>
+            <button class="btn btn-block" onclick="closeModal('modal-public'); window.location.href='family.html'">Я по ссылке</button>
+        </div>
+    </div>
+
+    <script src="js/ui.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/book.js"></script>
+</body>
+</html>

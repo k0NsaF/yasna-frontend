@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head><title>Тест</title></head>
+<body>
+    <h1>Тест кнопки</h1>
+    <button onclick="testCreate()">Создать семью</button>
+    <div id="result" style="margin-top: 20px;"></div>
+
+    <script>
+        async function testCreate() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerText = "Авторизация...";
+
+            try {
+                // 1. Логинимся, чтобы получить токен
+                const loginRes = await fetch('http://127.0.0.1:8000/api/master/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: 'yasna-demo-2026' })
+                });
+                const loginData = await loginRes.json();
+                
+                if (!loginData.access_token) throw new Error("Не удалось войти");
+                const token = loginData.access_token;
+
+                resultDiv.innerText = "Создание семьи...";
+
+                // 2. Создаем семью
+                const res = await fetch('http://127.0.0.1:8000/api/master/families', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ name: "Тестовая Семья", phone: "123" })
+                });
+                
+                const data = await res.json();
+                resultDiv.innerText = "Успех! Семья создана: " + data.name;
+
+            } catch (e) {
+                resultDiv.innerText = "Ошибка: " + e.message;
+            }
+        }
+    </script>
+</body>
+</html>

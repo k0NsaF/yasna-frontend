@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ясна | Кабинет родителя</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body style="background: var(--bg);">
+
+    <header style="background: white; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="img/yasna-logo.jpg" alt="Ясна" style="height: 40px; border-radius: 8px;">
+            <h1 style="font-size: 18px; margin: 0;" id="family-title">Личный кабинет</h1>
+        </div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="position: relative; cursor: pointer;" onclick="showToast('У вас 1 новое уведомление')">
+                <span style="font-size: 24px;">🔔</span>
+                <span style="position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</span>
+            </div>
+        </div>
+    </header>
+
+    <main style="max-width: 800px; margin: 20px auto; padding: 0 15px;">
+        
+        <div class="card" style="margin-bottom: 20px; padding: 15px 20px;">
+            <div style="color: var(--gray); font-size: 14px; margin-bottom: 10px;">Мои дети:</div>
+            <div id="children-tabs" style="display: flex; gap: 10px;"></div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom: 20px;">
+            <div class="card" style="text-align: center; border-top: 4px solid var(--yellow);">
+                <div style="color: var(--gray); font-size: 14px;">Остаток занятий</div>
+                <div style="font-size: 36px; font-weight: bold; color: var(--yellow-dark);" id="balance-lessons">0</div>
+            </div>
+            <div class="card" style="text-align: center; border-top: 4px solid var(--dark);">
+                <div style="color: var(--gray); font-size: 14px;">Денежный баланс</div>
+                <div style="font-size: 32px; font-weight: bold;" id="balance-money">0 ₽</div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+            <h3 style="margin-top: 0; margin-bottom: 15px;">Ближайшие занятия</h3>
+            <div id="upcoming-lessons" style="display: flex; flex-direction: column; gap: 10px;"></div>
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn" onclick="window.location.href='book.html'">Записаться на занятие</button>
+                <button class="btn btn-gray" onclick="showToast('Переход к оплате')">Оплатить абонемент</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top: 0; margin-bottom: 15px;">История и чеки</h3>
+            <div style="display: flex; flex-direction: column; gap: 10px;" id="history-list"></div>
+        </div>
+
+    </main>
+
+    <script src="js/ui.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/family.js"></script>
+</body>
+</html>
